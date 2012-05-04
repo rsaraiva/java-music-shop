@@ -1,0 +1,29 @@
+Siga os passos abaixo para instalar:
+
+- Baixe projeto zipado em https://github.com/rsaraiva/java-music-shop/zipball/master
+
+- Descompacte o projeto e copie para o diretório da workspace do eclipse.
+
+- Importe o projeto para a workspace:
+
+  File / Import... / Existing Projects into Workspace
+
+- Crie o banco de dados
+
+$ mysql -u root -p
+> create database musicshop;
+> quit
+
+- Execute o script de criação das tabelas
+
+  mysql -u root -p <caminho
+
+- Acesse o diretorio do projeto pelo Prompt do DOS.
+
+  cd seudiretorioworkspace\java-music-shop
+  
+- Execute a classe principal do projeto
+
+  java -cp bin;lib\mysql-connector-java-5.1.19-bin.jar br.com.people.musicshop.view.Principal
+  
+  
