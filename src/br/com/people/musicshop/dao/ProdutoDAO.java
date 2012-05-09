@@ -110,7 +110,7 @@ public class ProdutoDAO {
 	public void alterar(Produto produto) throws Exception {
 		try {
 			String sqlUpdate = "update produto set nome = ?, categoria_id = ?, valor = ? "
-					+ "where cliente_id = ?";
+					+ "where produto_id = ?";
 			PreparedStatement stmt = connection.prepareStatement(sqlUpdate);
 			stmt.setString(1, produto.getNome());
 			stmt.setInt(2, produto.getCategoria().getId());

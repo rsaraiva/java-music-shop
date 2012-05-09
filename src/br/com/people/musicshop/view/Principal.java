@@ -4,7 +4,11 @@ import java.io.Console;
 import java.sql.SQLException;
 
 import br.com.people.musicshop.controller.CategoriaController;
+import br.com.people.musicshop.controller.ClienteController;
+import br.com.people.musicshop.controller.ProdutoController;
 import br.com.people.musicshop.entity.Categoria;
+import br.com.people.musicshop.entity.Cliente;
+import br.com.people.musicshop.entity.Produto;
 
 public class Principal {
 
@@ -13,6 +17,8 @@ public class Principal {
 	
 	// controllers com metodos de controle da view
 	static CategoriaController categoriaController = new CategoriaController();
+	static ClienteController clienteController = new ClienteController();
+	static ProdutoController produtoController = new ProdutoController();
 	
 	// metodo principal
 	public static void main(String[] args) throws SQLException {
@@ -36,6 +42,9 @@ public class Principal {
 			mensagem("Até logo!");
 			System.exit(0);
 			break;
+		
+		// ===== CATEGORIAS =====
+			
 		case 11: // lista categorias
 			mensagem("Categorias cadastradas:");
 			categoriaController.listar();
@@ -63,6 +72,114 @@ public class Principal {
 				categoria.setNome(console.readLine());
 				categoriaController.alterar(categoria);
 				mensagem("Categoria alterada com sucesso!");
+			} catch (Exception e) {
+				mensagem(e.getMessage());
+			}
+			break;
+		
+		
+		// ===== CLIENTES =====
+		
+		case 21: // lista clientes
+			mensagem("Clientes cadastrados:");
+			clienteController.listar();
+			break;
+		case 22: // inserir cliente
+			{
+				label("Nome: ");
+				String nome = console.readLine();
+				label("Endereço: ");
+				String endereco = console.readLine();
+				clienteController.inserir(nome, endereco);
+				mensagem("Cliente cadastrado com sucesso!");
+			}
+			break;
+		case 23: // excluir cliente
+			try {
+				label("Código: ");
+				clienteController.excluir(Integer.parseInt(console.readLine()));
+				mensagem("Categoria excluida com sucesso!");
+			} catch (Exception e) {
+				mensagem(e.getMessage());
+			}
+			break;
+		case 24: // alterar cliente
+			try {
+				label("Código: ");
+				Cliente cliente = clienteController.carregar(Integer.parseInt(console.readLine()));
+				label("Novo nome ("+cliente.getNome()+"): ");
+				String nome = console.readLine();
+				if (!nome.isEmpty()) {
+					cliente.setNome(nome);
+				}
+				label("Novo endereço ("+cliente.getEndereco()+"): ");
+				String endereco = console.readLine();
+				if (!endereco.isEmpty()) {
+					cliente.setEndereco(endereco);
+				}
+				clienteController.alterar(cliente);
+				mensagem("Cliente alterado com sucesso!");
+			} catch (Exception e) {
+				mensagem(e.getMessage());
+			}
+			break;
+			
+			
+		// ===== PRODUTOS =====
+
+		case 31: // lista produtos
+			mensagem("Produtos cadastrados:");
+			produtoController.listar();
+			break;
+		case 32: // inserir produto
+			{
+				mensagem("Categorias cadastradas:");
+				categoriaController.listar();
+				
+				label("Código da Categoria: ");
+				String codCategoria = console.readLine();
+				label("Nome: ");
+				String nome = console.readLine();
+				label("Valor: ");
+				String valor = console.readLine();
+				produtoController.inserir(new Categoria(Integer.parseInt(codCategoria)), nome, Float.parseFloat(valor));
+				mensagem("Produto cadastrado com sucesso!");
+			}
+			break;
+		case 33: // excluir produto
+			try {
+				label("Código: ");
+				produtoController.excluir(Integer.parseInt(console.readLine()));
+				mensagem("Produto excluido com sucesso!");
+			} catch (Exception e) {
+				mensagem(e.getMessage());
+			}
+			break;
+		case 34: // alterar produto
+			try {
+				label("Código do Produto: ");
+				Produto produto = produtoController.carregar(Integer.parseInt(console.readLine()));
+				
+				mensagem("Categorias cadastradas:");
+				categoriaController.listar();
+				
+				label("Novo Código da Categoria (" + produto.getCategoria().getId() + "): ");
+				String codCategoria = console.readLine();
+				if (!codCategoria.isEmpty()) {
+					produto.setCategoria(new Categoria(Integer.parseInt(codCategoria)));
+				}
+				label("Novo Nome (" + produto.getNome() + "): ");
+				String nome = console.readLine();
+				if (!nome.isEmpty()) {
+					produto.setNome(nome);
+				}
+				label("Novo Valor (" + produto.getValor() + "): ");
+				String valor = console.readLine();
+				if (!valor.isEmpty()) {
+					produto.setValor(Float.parseFloat(valor));
+				}
+				produtoController.alterar(produto);
+				mensagem("Produto alterado com sucesso!");
 			} catch (Exception e) {
 				mensagem(e.getMessage());
 			}
