@@ -1,5 +1,6 @@
 package br.com.people.musicshop.entity;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Venda {
@@ -8,6 +9,17 @@ public class Venda {
 	private Cliente cliente;
 	private Produto produto;
 	private Date data;
+	
+	private SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+	
+	public Venda() {
+	}
+	
+	public Venda(Cliente cliente, Produto produto, Date date) {
+		this.cliente = cliente;
+		this.produto = produto;
+		this.data = date;
+	}
 	
 	public Integer getId() {
 		return id;
@@ -32,5 +44,11 @@ public class Venda {
 	}
 	public void setData(Date data) {
 		this.data = data;
+	}
+	
+	@Override
+	public String toString() {
+		return id + " / " + cliente + " / " + produto + " / " + 
+				format.format(data);
 	}
 }

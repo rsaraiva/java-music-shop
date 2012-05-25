@@ -1,12 +1,13 @@
 package br.com.people.musicshop.dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import br.com.people.musicshop.entity.Cliente;
 import br.com.people.musicshop.entity.Venda;
 
 public class VendaDAO {
@@ -19,11 +20,14 @@ public class VendaDAO {
 
 	public Integer inserir(Venda venda) {
 		try {
+			java.sql.Date dataSQL = new java.sql.Date(venda.getData().getTime());
+			
 			PreparedStatement prepareStatement = connection
-					.prepareStatement("insert into venda(cliente_id, produto_id, data) values (?,?,?)");
+					.prepareStatement("insert into venda(cliente_id, produto_id, " +
+							"data) values (?,?,?)");
 			prepareStatement.setInt(1, venda.getCliente().getId());
 			prepareStatement.setInt(2, venda.getProduto().getId());
-			prepareStatement.setDate(3, (java.sql.Date) venda.getData());
+			prepareStatement.setDate(3, dataSQL);
 			prepareStatement.executeUpdate();
 			// get last id
 			Integer id = null;
@@ -127,6 +131,31 @@ public class VendaDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public List<Venda> listarPorCliente(Cliente cliente) { //
+		ProdutoDAO produtoDAO = new ProdutoDAO(connection);
+		ClienteDAO clienteDAO = new ClienteDAO(connection);
+		try {
+			List<Venda> vendas = new ArrayList<Venda>();
+			String sql = "select * from venda where cliente_id = ? order by data"; //
+			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt.setInt(1, cliente.getId()); //
+			ResultSet resultSet = stmt.executeQuery();
+			while(resultSet.next()) {
+				Venda venda = new Venda();
+				venda.setId(resultSet.getInt("produto_id"));
+				venda.setCliente(clienteDAO.carregar(resultSet.getInt("cliente_id")));
+				venda.setProduto(produtoDAO.carregar(resultSet.getInt("produto_id")));
+				venda.setData(resultSet.getDate("data"));
+				vendas.add(venda);
+			}
+			stmt.close();
+			return vendas;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new ArrayList<Venda>();
 		}
 	}
 	

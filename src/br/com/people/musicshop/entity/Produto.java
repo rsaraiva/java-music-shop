@@ -9,6 +9,10 @@ public class Produto {
 	
 	public Produto() {
 	}
+	
+	public Produto(Integer id) {
+		this.id = id;
+	}
 
 	public Produto(Categoria categoria, String nome, Float valor) {
 		this.categoria = categoria;

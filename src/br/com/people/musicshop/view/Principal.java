@@ -2,13 +2,16 @@ package br.com.people.musicshop.view;
 
 import java.io.Console;
 import java.sql.SQLException;
+import java.util.Date;
 
 import br.com.people.musicshop.controller.CategoriaController;
 import br.com.people.musicshop.controller.ClienteController;
 import br.com.people.musicshop.controller.ProdutoController;
+import br.com.people.musicshop.controller.VendaController;
 import br.com.people.musicshop.entity.Categoria;
 import br.com.people.musicshop.entity.Cliente;
 import br.com.people.musicshop.entity.Produto;
+import br.com.people.musicshop.entity.Venda;
 
 public class Principal {
 
@@ -19,6 +22,7 @@ public class Principal {
 	static CategoriaController categoriaController = new CategoriaController();
 	static ClienteController clienteController = new ClienteController();
 	static ProdutoController produtoController = new ProdutoController();
+	static VendaController vendaController = new VendaController();
 	
 	// metodo principal
 	public static void main(String[] args) throws SQLException {
@@ -32,14 +36,14 @@ public class Principal {
 		}
 	}
 	
-	// metodo que recebe o comando digitado pelo usuário e aciona o controller
+	// metodo que recebe o comando digitado pelo usuÃ¡rio e aciona o controller
 	public static void executarComando(String comando) {
 		switch (Integer.parseInt(comando)) {
 		case 0: // reexibe o menu na tela
 			exibirMenu();
 			break;
 		case 9: // sai do programa
-			mensagem("Até logo!");
+			mensagem("AtÃ© logo!");
 			System.exit(0);
 			break;
 		
@@ -56,7 +60,7 @@ public class Principal {
 			break;
 		case 13: // espera um codigo e chama o metodo de exclusao
 			try {
-				label("Código: ");
+				label("CÃ³digo: ");
 				categoriaController.excluir(Integer.parseInt(console.readLine()));
 				mensagem("Categoria excluida com sucesso!");
 			} catch (Exception e) {
@@ -65,7 +69,7 @@ public class Principal {
 			break;
 		case 14: // espera um codigo e chama o metodo alterar do controller
 			try {
-				label("Código: ");
+				label("CÃ³digo: ");
 				Categoria categoria = categoriaController.carregar(
 						Integer.parseInt(console.readLine()));
 				label("Novo nome ("+categoria.getNome()+"): ");
@@ -88,7 +92,7 @@ public class Principal {
 			{
 				label("Nome: ");
 				String nome = console.readLine();
-				label("Endereço: ");
+				label("Endereco: ");
 				String endereco = console.readLine();
 				clienteController.inserir(nome, endereco);
 				mensagem("Cliente cadastrado com sucesso!");
@@ -96,7 +100,7 @@ public class Principal {
 			break;
 		case 23: // excluir cliente
 			try {
-				label("Código: ");
+				label("Codigo: ");
 				clienteController.excluir(Integer.parseInt(console.readLine()));
 				mensagem("Categoria excluida com sucesso!");
 			} catch (Exception e) {
@@ -105,7 +109,7 @@ public class Principal {
 			break;
 		case 24: // alterar cliente
 			try {
-				label("Código: ");
+				label("Codigo: ");
 				Cliente cliente = clienteController.carregar(Integer.parseInt(console.readLine()));
 				label("Novo nome ("+cliente.getNome()+"): ");
 				String nome = console.readLine();
@@ -136,19 +140,22 @@ public class Principal {
 				mensagem("Categorias cadastradas:");
 				categoriaController.listar();
 				
-				label("Código da Categoria: ");
+				label("Codigo da Categoria: ");
 				String codCategoria = console.readLine();
 				label("Nome: ");
 				String nome = console.readLine();
 				label("Valor: ");
 				String valor = console.readLine();
-				produtoController.inserir(new Categoria(Integer.parseInt(codCategoria)), nome, Float.parseFloat(valor));
+				produtoController.inserir(
+						new Categoria(Integer.parseInt(codCategoria)), 
+						nome, 
+						Float.parseFloat(valor));
 				mensagem("Produto cadastrado com sucesso!");
 			}
 			break;
 		case 33: // excluir produto
 			try {
-				label("Código: ");
+				label("CÃ³digo: ");
 				produtoController.excluir(Integer.parseInt(console.readLine()));
 				mensagem("Produto excluido com sucesso!");
 			} catch (Exception e) {
@@ -157,13 +164,13 @@ public class Principal {
 			break;
 		case 34: // alterar produto
 			try {
-				label("Código do Produto: ");
+				label("CÃ³digo do Produto: ");
 				Produto produto = produtoController.carregar(Integer.parseInt(console.readLine()));
 				
 				mensagem("Categorias cadastradas:");
 				categoriaController.listar();
 				
-				label("Novo Código da Categoria (" + produto.getCategoria().getId() + "): ");
+				label("Novo CÃ³digo da Categoria (" + produto.getCategoria().getId() + "): ");
 				String codCategoria = console.readLine();
 				if (!codCategoria.isEmpty()) {
 					produto.setCategoria(new Categoria(Integer.parseInt(codCategoria)));
@@ -184,6 +191,75 @@ public class Principal {
 				mensagem(e.getMessage());
 			}
 			break;
+			
+			// ===== VENDAS =====
+			
+		case 41: // efetuar venda
+			
+			try {
+				mensagem("Clientes cadastrados: ");
+				clienteController.listar();
+				
+				label("Digite o codigo do cliente: ");
+				String codCliente = console.readLine();
+				
+				mensagem("Produtos cadastrados: ");
+				produtoController.listar();
+				
+				label("Digite o codigo do produto: ");
+				String codProduto = console.readLine();
+				
+//				Cliente cliente = new Cliente();
+//				cliente.setId(Integer.parseInt(codCliente));
+//				
+//				Produto produto = new Produto();
+//				produto.setId(Integer.parseInt(codProduto));
+//				
+//				Venda venda = new Venda();
+//				venda.setCliente(cliente);
+//				venda.setProduto(produto);
+//				venda.setData(new Date());
+				
+				Venda venda = new Venda(
+						new Cliente(Integer.parseInt(codCliente)),
+						new Produto(Integer.parseInt(codProduto)),
+						new Date());
+				
+				vendaController.efetuarVenda(venda);
+				
+				mensagem("Venda efetuada com sucesso!");
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				mensagem(e.getMessage());
+			}
+			
+			break;
+			
+		case 42: // listar vendas
+			
+			mensagem("Vendas Realizadas:");
+			vendaController.listar();
+			
+			break;
+			
+		case 43: // listar vendas por cliente
+			
+			mensagem("Clientes cadastrados: ");
+			clienteController.listar();
+			
+			label("Informe o codigo do cliente: ");
+			String codCliente = console.readLine();
+			
+			mensagem("Vendas Realizadas:");
+			vendaController.listarPorCliente(
+					new Cliente(Integer.parseInt(codCliente)));
+			
+			break;
+			
+		default:
+			mensagem("Opcao invalida!");
+			break;
 		}
 	}
 	
@@ -199,7 +275,7 @@ public class Principal {
 		System.out.println(" Categorias: (11) Listar | (12) Criar | (13) Excluir | (14) Alterar");
 		System.out.println(" Clientes:   (21) Listar | (22) Criar | (23) Excluir | (24) Alterar");
 		System.out.println(" Produtos:   (31) Listar | (32) Criar | (33) Excluir | (34) Alterar");
-		System.out.println(" Vendas:     (41) Efetuar Venda");
+		System.out.println(" Vendas:     (41) Efetuar Venda | (42) Listar Vendas | (43) Vendas por Cliente");
 		System.out.println();
 		System.out.println(" (0) Exibir o menu");
 		System.out.println(" (9) Sair");
